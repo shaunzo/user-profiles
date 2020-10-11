@@ -1,0 +1,27 @@
+{
+  "name": "user-profiles",
+  "version": "1.0.0",
+  "description": "A Next.js app to display a list of users with teh ability to click through to a user's info as well as the ability to sort, filter and search through profiles",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaunzo/user-profiles.git"
+  },
+  "keywords": [],
+  "author": "Shaun Reddiar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shaunzo/user-profiles/issues"
+  },
+  "homepage": "https://github.com/shaunzo/user-profiles#readme",
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
+    "isomorphic-unfetch": "^3.1.0",
+    "next": "^9.5.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
