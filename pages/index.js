@@ -2,6 +2,7 @@ import Layout from "../components/layout.js";
 import fetch from "isomorphic-fetch";
 import Error from "next/error";
 import ProfileList from "../components/profileList";
+import ProfileCard from "../components/profileCard";
 
 class Index extends React.Component {
     static async getInitialProps() {
@@ -27,15 +28,7 @@ class Index extends React.Component {
 
         return (
             <Layout title="Profiles">
-                <div className="container">
-                    {profiles.results.map(profile => (
-                        <div className="profileCard">
-                            <div className="profileCard--info">
-                                <div className="profileCard--name">{`${profile.name.title} ${profile.name.first} ${profile.name.last}`}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <ProfileList profilesArray={ profiles } />
             </Layout>
         )
     }

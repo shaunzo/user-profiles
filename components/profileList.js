@@ -1,22 +1,20 @@
-import Component from "react";
+import ProfileCard from "../components/profileCard";
 
-export default class ProfileList extends React.Component {
+const ProfileList = ({ profilesArray }) => (
+    <div className="container profileList">
+        {profilesArray.results.map(profile => (
+            <ProfileCard profileInfo={ profile }/>
+        ))}
 
-    render() {
-        const { profiles } = this.props;
+        <style jsx>{`
+            .profileList {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+        `}</style>
+    </div>
+);
 
-        return (
-            <div>
-                <p>The profile list</p>
-
-                <div>
-
-                    {/* {profiles.results.map(profile => (
-                        <p>profile.gender</p>
-                    ))} */}
-                </div>
-
-            </div>
-        )
-    }
-}
+export default ProfileList;
