@@ -9,7 +9,7 @@ class Index extends React.Component {
         let profiles;
 
         try {
-            const response = await fetch ('https://randomuser.me/api/?results=50');
+            const response = await fetch ('https://randomuser.me/api/?results=50&seed=0cb0c83eae8f0a6e');
             profiles = await response.json();
         } catch (err) {
             console.log(err);
