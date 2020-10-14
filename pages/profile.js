@@ -4,6 +4,7 @@ import Layout from "../components/layout";
 import Link from "next/link";
 
 class Profile extends React.Component {
+
     static async getInitialProps({ req, res, query }) {
         const email = query.email;
         const response = await fetch('https://randomuser.me/api/?results=50&seed=0cb0c83eae8f0a6e');
@@ -19,7 +20,6 @@ class Profile extends React.Component {
 
     render() {
         const { profile } = this.props;
-
         
         if (profile.length === 0) {
             return <Error statusCode={404} />
@@ -32,23 +32,23 @@ class Profile extends React.Component {
                 <div>
                     <div className="profile-top-banner">
                         <Link href="/">
-                            <a className="back">Back to profiles</a>
+                            <a className="back accent-text">Back to profiles</a>
                         </Link>
 
                         <div className="profile-avatar" style={{backgroundImage: `url(${userData.picture.large})`}}></div>
                         <div className="profile-header-info">
                             <h2>{userData.name.title} {userData.name.first} {userData.name.last}</h2>
-                            <p>{userData.location.city} | <strong>{userData.location.country}</strong></p>
+                            <p className="accent-text">{userData.location.city} | <strong>{userData.location.country}</strong></p>
                         </div>
                     </div>
 
                     <div className="container">
                         <div className="profile-info">
                             <div className="profile-info-block">
-                                <h3>Personal Information:</h3>
+                                <h3 className="accent-text">Personal Information:</h3>
                                 <p><strong>Gender:</strong> {userData.gender}</p>
                                 <p><strong>Age:</strong> {userData.dob.age}</p>
-                                <p><strong>Date of Birth:</strong> {userData.dob.date}</p>
+                                <p><strong>Date of Birth:</strong> {`${new Date(userData.dob.date).getUTCDate()}/${new Date(userData.dob.date).getUTCMonth()}/${new Date(userData.dob.date).getUTCFullYear()}`}</p>
                                 <p><strong>ID:</strong> {userData.id.value || `-`}</p>
                                 <p><strong>Nickname:</strong> {userData.id.name || `-`}</p>
 
@@ -57,13 +57,9 @@ class Profile extends React.Component {
                     </div>
                     <style jsx>{`
                         .profile-top-banner {
-                            background-color: #000;
+                            background-color: var(--dark-color);
                             color: #fff;
                             padding: 20px;
-                        }
-
-                        .profile-top-banner a {
-                            color: #fff;
                         }
 
                         .profile-avatar {
@@ -80,12 +76,18 @@ class Profile extends React.Component {
                         .profile-header-info {
                             text-align: center;
                         }
+                        .profile-header-info h2 {
+                            margin-bottom: 0;
+                        }
+                        .profile-header-info p {
+                            margin-top: 0;
+                        }
 
                         .profile-info {
                             margin-top: 20px;
-                            background-color: #fff;
+                            background-color: var(--background-pale-color);
                             padding: 20px;
-                            color: #78787b;
+                            color: var(--dark-color);
                         }
                     `}</style>
                 </div>

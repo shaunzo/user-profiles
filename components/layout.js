@@ -1,3 +1,10 @@
+import Router from "next/router";
+import NProgress from "nprogress";
+
+Router.onRouteChangeStart = () => NProgress.start()
+Router.onRouteChangeComplete = () => NProgress.done();
+Router.onRouteChangeError = () => NProgress.done();
+
 const Layout = ({children, title}) => (
     <div className="layout-root">
         <header className="layout-header">
@@ -21,7 +28,7 @@ const Layout = ({children, title}) => (
     
             .layout-header {
                 color: #fff;
-                background-color: #000;
+                background-color: var(--dark-color);
                 display: flex;
                 flex-direction: row;
                 justify-content: space-evenly;
@@ -55,7 +62,8 @@ const Layout = ({children, title}) => (
             .layout-footer {
                 margin-top: 20px;
                 padding: 20px;
-                border-top: 1px solid #ccc;
+                background-color: var(--dark-color);
+                color: var(--light-color);
                 text-align: center;
                 font-style: italic;
             }
