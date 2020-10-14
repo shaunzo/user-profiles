@@ -22,7 +22,6 @@ class Index extends React.Component {
     state = this.props;
 
     render() {
-        // const { profiles } = this.props;
 
         if(this.state.profiles.length === 0) {
             return <Error statusCode={503} />
