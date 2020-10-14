@@ -19,16 +19,18 @@ class Index extends React.Component {
         return { profiles };
     }
 
-    render() {
-        const { profiles } = this.props;
+    state = this.props;
 
-        if(profiles.length === 0) {
+    render() {
+        // const { profiles } = this.props;
+
+        if(this.state.profiles.length === 0) {
             return <Error statusCode={503} />
         }
 
         return (
             <Layout title="Profiles">
-                <ProfileList profilesArray={ profiles } />
+                <ProfileList profilesArray={ this.state.profiles } />
             </Layout>
         )
     }
