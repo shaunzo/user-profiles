@@ -1,26 +1,11 @@
 import ProfileCard from "../components/profileCard";
 
 class ProfileList extends React.Component {
-
-    searchProfiles(searchTerm) {
-        console.log(searchTerm);
-    }
     
     render() {
 
         return (
             <div className="container profileList">
-                <div className="profileList-toolbar">
-                    <div className="profileList-toolbar-search">
-                        <input onInput={(e)=> this.searchProfiles(e.target.value)} type="text" placeholder="Search" />
-                    </div>
-                    <div className="flex-spacer"></div>
-                    <div className="profileList-toolbar-buttons">
-                        <button>Filter by</button>
-                        <button>Sort by</button>
-                        <button>Reset</button>
-                    </div>
-                </div>
                 {this.props.profilesArray.results.map(profile => (
                     <ProfileCard key={`${profile.name.first}-${profile.name.last}`} profileInfo={ profile }/>
                 ))}
