@@ -3,21 +3,35 @@ import fetch from "isomorphic-fetch";
 import Error from "next/error";
 import ProfileList from "../components/profileList";
 import Message from "../components/message";
+import Checkbox from "../components/forms/checkbox";
+import RadioButton from "../components/forms/radioButton"
 
 class Index extends React.Component {
 
     static async getInitialProps() {
         let profiles;
+        let filters;
 
         try {
             const response = await fetch ('https://randomuser.me/api/?results=50&seed=0cb0c83eae8f0a6e');
             profiles = await response.json();
+            filters = {};
+            filters.countries = await profiles.results.map(item => {
+                return item.location.country;
+            });
+
+            filters.cities = await profiles.results.map(item => {
+               return item.location.city;
+            });
+
         } catch (err) {
             console.log(err);
             profiles = [];
+            filters.countries = [];
+            filters.cities = [];
         }
 
-        return { profiles };
+        return { profiles, filters };
     }
 
     constructor(props) {
@@ -25,8 +39,11 @@ class Index extends React.Component {
         this.state = {
             profiles: props.profiles,
             expandFilter: false,
-            expandSortPanel: false
+            expandSortPanel: false,
+            filters: props.filters
         };
+
+        console.log(this.state);
     }
 
 
@@ -116,18 +133,10 @@ class Index extends React.Component {
                                     </div>
 
                                     <div className="panel-col-3">
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
                                     </div>
                                 </div>
 
@@ -139,18 +148,10 @@ class Index extends React.Component {
                                     </div>
 
                                     <div className="panel-col-3">
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
-                                        <div className="checkbox-item">
-                                            <span className="checkbox"></span> Field
-                                        </div>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
+                                        <Checkbox label="Field"/>
                                     </div>
                                 </div>
                             </div>
@@ -163,27 +164,15 @@ class Index extends React.Component {
                                     </div>
 
                                     <div className="panel-col-2 flex-spacer">
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> First Name
-                                        </div>
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> Last Name
-                                        </div>
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> Country
-                                        </div>
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> City
-                                        </div>
+                                        <RadioButton label="First Name" />
+                                        <RadioButton label="Last Name" />
+                                        <RadioButton label="Country" />
+                                        <RadioButton label="City" />
                                     </div>
 
                                     <div className="panel-col-2">
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> Asc
-                                        </div>
-                                        <div className="radioInput-item">
-                                            <span className="radioInput"></span> Desc
-                                        </div>
+                                        <RadioButton label="Asc" />
+                                        <RadioButton label="Desc" />
                                     </div>
                                 </div>
                             </div>
@@ -266,30 +255,6 @@ class Index extends React.Component {
                         display: flex;
                         flex-direction: row;
                     }
-
-                    .checkbox-item,
-                    .radioInput-item {
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        margin-right: 20px
-                    }
-
-                    .checkbox-item .checkbox,
-                    .radioInput-item .radioInput {
-                        display: inline-block;
-                        width: 15px;
-                        height: 15px;
-                        border: 1px solid #fff;
-                        margin-right: 5px;
-                        margn-bottom: 5px;
-                    }
-
-                    .radioInput-item .radioInput {
-                        border-radius: 50%;
-                    }
-
                 `}</style>
             </div>
         )
