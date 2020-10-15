@@ -42,9 +42,17 @@ export default class AppDocument extends Document {
                             height: 100%;   
                         }
 
+                        // #__next div {
+                        //     height: 100%;
+                        // }
+
                         .container {
                             width: 900px;
                             margin: 0 auto;
+                        }
+
+                        .bold-text {
+                            font-weight: bold;
                         }
 
                         .accent-text {

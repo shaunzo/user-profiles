@@ -4,7 +4,7 @@ const ProfileCard = ({ profileInfo }) => (
 
     <div className="profileCard">
         <div className="profileCard--avatar" style={{backgroundImage: `url(${profileInfo.picture.large})`}}></div>
-        <div className="profileCard--image" style={{backgroundImage: `url(/static/img-${Math.floor(Math.random() * (7 - 1)) + 1}.jpg)`}}></div>
+        <div className="profileCard--image" style={{backgroundImage: `url(/static/img-1.jpg)`}}></div>
         <div className="profileCard--info">
             <div className="profileCard--info--firstName">{profileInfo.name.first}</div>
             <div className="profileCard--info--lastName">{profileInfo.name.last}</div>
