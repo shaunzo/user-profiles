@@ -1,6 +1,16 @@
 # user-profiles
 A Next.js app to display a list of users with teh ability to click through to a user's info as well as the ability to sort, filter and search through profiles
 
+# To run this project
+Please ensure that you have Node.js installed on your system (https://nodejs.org/en/) as well as git (https://git-scm.com/)
+
+1. Navigate to a diectory on your system and run: `git clone git@github.com:shaunzo/user-profiles.git`
+2. On your terminal cd in the newly create folder within your directory and run:
+   `cd ./user-profiles && npm install`
+   If you run into permission errors and you are on a Mac or Linux syste, please run `sudo npm install`
+3. Run `npm run dev`
+4. Ensure that you have nothing running on http://localhost:3000. In a browser navigate to `http:localhost:3000`
+
 
 # Considerations
 ## Dummy data
@@ -24,5 +34,5 @@ There was no unique system ID supplied in teh API apart from a citizen which for
 Ideally in a real API each profile record should have a unique system id generated when entering each record which would be used.
 
 ## State
-I did not see a need to include Redux in this project as it is a fairly small project. The only state required to reflect would be the route loading state which *Next.js* supplied via the *NProgress* module
+I did not see a need to include Redux in this project as it is a fairly small project. The only state required to reflect would be the route loading state which *Next.js* supplied via the *NProgress* module as well as using the index.js's local component state. If the project had to grow beyond this point, it will be a good consideration to include redux. I took care in considering this, because mishandling on including redux could hamper with Next.js's server-side rendering on other pages.]
 

@@ -24,7 +24,8 @@ class Index extends React.Component {
         super(props);
         this.state = {
             profiles: props.profiles,
-            expandFilter: false
+            expandFilter: false,
+            expandSortPanel: false
         };
     }
 
@@ -68,6 +69,7 @@ class Index extends React.Component {
                 results: initialState.results
             },
             expandFilter: false,
+            expandSortPanel: false,
             search: null
         });
     }
@@ -94,11 +96,15 @@ class Index extends React.Component {
                                         className={`${this.state.expandFilter ? "active" : ""}`} onClick={() => this.setState({expandFilter: !this.state.expandFilter})}>
                                         Filter
                                     </button>
-                                    <button>Sort</button>
+                                    <button
+                                        className={`${this.state.expandSortPanel ? "active" : ""}`} onClick={() => this.setState({expandSortPanel: !this.state.expandSortPanel})}>
+                                        Sort
+                                    </button>
                                     <button onClick={() => this.resetProfiles()}>Reset</button>
                                 </div>
                             </div>
 
+                            {/* Filter Panel */}
                             <div className={`profileList-toolbar-expansion-panel ${this.state.expandFilter ? "active" : ""}`}>
                                 <div className="panel-row">
                                     <div className="panel-col-1">
@@ -111,7 +117,16 @@ class Index extends React.Component {
 
                                     <div className="panel-col-3">
                                         <div className="checkbox-item">
-                                            <span className="checkbox"></span> America
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
                                         </div>
                                     </div>
                                 </div>
@@ -125,11 +140,52 @@ class Index extends React.Component {
 
                                     <div className="panel-col-3">
                                         <div className="checkbox-item">
-                                            <span className="checkbox"></span> America
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
+                                        </div>
+                                        <div className="checkbox-item">
+                                            <span className="checkbox"></span> Field
                                         </div>
                                     </div>
                                 </div>
-                                
+                            </div>
+
+                            {/* Sort Panel */}
+                            <div className={`profileList-toolbar-expansion-panel ${this.state.expandSortPanel ? "active" : ""}`}>
+                                <div className="panel-row">
+                                    <div className="panel-col-1">
+                                        <strong>Sort by:</strong>
+                                    </div>
+
+                                    <div className="panel-col-2 flex-spacer">
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> First Name
+                                        </div>
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> Last Name
+                                        </div>
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> Country
+                                        </div>
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> City
+                                        </div>
+                                    </div>
+
+                                    <div className="panel-col-2">
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> Asc
+                                        </div>
+                                        <div className="radioInput-item">
+                                            <span className="radioInput"></span> Desc
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,8 +259,16 @@ class Index extends React.Component {
                     .panel-col-3 {
                         flex-grow: 1;
                     }
+                    
+                    .panel-col-1,
+                    .panel-col-2,
+                    .panel-col-3 {
+                        display: flex;
+                        flex-direction: row;
+                    }
 
-                    .checkbox-item {
+                    .checkbox-item,
+                    .radioInput-item {
                         cursor: pointer;
                         display: flex;
                         flex-direction: row;
@@ -212,13 +276,18 @@ class Index extends React.Component {
                         margin-right: 20px
                     }
 
-                    .checkbox-item .checkbox {
+                    .checkbox-item .checkbox,
+                    .radioInput-item .radioInput {
                         display: inline-block;
                         width: 15px;
                         height: 15px;
                         border: 1px solid #fff;
                         margin-right: 5px;
                         margn-bottom: 5px;
+                    }
+
+                    .radioInput-item .radioInput {
+                        border-radius: 50%;
                     }
 
                 `}</style>
