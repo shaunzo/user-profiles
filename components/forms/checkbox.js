@@ -1,6 +1,6 @@
-const Checkbox = ({ label }) => (
+const Checkbox = ({ label, selected }) => (
   <div className="checkbox-item">
-    <span data={`${label}`} className="checkbox"></span> { label }
+    <span data={`${label}`} className={`checkbox ${selected ? "selected" : ""}`}></span> { label }
 
     <style jsx>{`
     .checkbox-item {
@@ -8,7 +8,8 @@ const Checkbox = ({ label }) => (
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin-right: 20px
+        padding-right: 20px;
+        white-space: nowrap;
     }
 
     .checkbox-item .checkbox {
@@ -18,6 +19,10 @@ const Checkbox = ({ label }) => (
         border: 1px solid #fff;
         margin-right: 5px;
         margn-bottom: 5px;
+    }
+
+    .checkbox.selected {
+      background-color: #fff;
     }
     `}</style>
   </div>

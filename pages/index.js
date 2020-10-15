@@ -16,34 +16,83 @@ class Index extends React.Component {
             const response = await fetch ('https://randomuser.me/api/?results=50&seed=0cb0c83eae8f0a6e');
             profiles = await response.json();
             filters = {};
+
             filters.countries = await profiles.results.map(item => {
-                return item.location.country;
+                return {
+                    name: item.location.country,
+                    active: false
+                };
             });
 
             filters.cities = await profiles.results.map(item => {
-               return item.location.city;
+               return {
+                    name: item.location.city,
+                    active: false
+               };
             });
 
         } catch (err) {
             console.log(err);
             profiles = [];
-            filters.countries = [];
-            filters.cities = [];
+            filters.countries = [],
+            filters.cities = []
         }
 
         return { profiles, filters };
     }
 
-    constructor(props) {
+    constructor(props) {        
         super(props);
+        
+        // Remove duplicate values from arrays
+        const uniqueCountries = [...new Map(props.filters.countries.map(item => [item.name, item])).values()];
+        const uniqueCities = [...new Map(props.filters.cities.map(item => [item.name, item])).values()];
+
+        // Set state
         this.state = {
             profiles: props.profiles,
             expandFilter: false,
             expandSortPanel: false,
-            filters: props.filters
+            filters: {
+                countries: uniqueCountries,
+                cities: uniqueCities
+            }
         };
+    }
 
-        console.log(this.state);
+    applyProfileFilter(index, value, type) {
+        
+        if(index && type === 'countries') {
+
+            this.setState(prevState => {
+                let filters = {};
+                    filters = { ...prevState.filters };
+                    filters.countries[index].active = !filters.countries[index].active;
+                    return { filters }
+                });
+
+            };
+
+            let cities = []
+
+            this.state.profiles.results.map(profile => {
+                    
+                if(profile.location.country === value) {
+                    cities.push({
+                        name: profile.location.city,
+                        active: false
+                    });
+                }
+            });
+
+            this.setState(prevState => {
+                let filters = {};
+                filters = { ...prevState.filters };
+                filters.cities = cities;
+                return { filters }
+            });
+
+            console.log(cities);
     }
 
 
@@ -133,10 +182,18 @@ class Index extends React.Component {
                                     </div>
 
                                     <div className="panel-col-3">
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
+                                        {
+                                            this.state.filters.countries.length === 0 ?
+                                            <span>No filters for country</span> : 
+                                            this.state.filters.countries.map((country, i) => {
+                                                return (
+                                                    <span className="input-wrapper" key={i}
+                                                        onClick={() => this.applyProfileFilter(i, country.name, 'countries')}>
+                                                        <Checkbox label={ country.name } selected={ country.active } />
+                                                    </span>
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
 
@@ -148,10 +205,18 @@ class Index extends React.Component {
                                     </div>
 
                                     <div className="panel-col-3">
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
-                                        <Checkbox label="Field"/>
+                                        {
+                                            this.state.filters.cities.length === 0 ?
+                                            <span>No filters for city</span> : 
+                                            this.state.filters.cities.map((city, i) => {
+                                                return (
+                                                    <span className="input-wrapper" key={i}
+                                                        onClick={() => this.applyProfileFilter(i, city.name, 'cities')}>
+                                                        <Checkbox label={ city.name } selected={ city.active } />
+                                                    </span>
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -233,11 +298,18 @@ class Index extends React.Component {
                         width: 100%;
                         display: flex;
                         flex-direction: row;
+                        padding-top: 20px;
+                    }
+
+                    .panel-row:first-child {
+                        padding-top: 0;
                     }
 
                     .panel-col-1,
                     .panel-col-2 {
                         flex-basis: 100px;
+                        flex-grow: 0;
+                        flex-shrink: 0;
                     }
 
                     .panel-col-2,
@@ -254,7 +326,13 @@ class Index extends React.Component {
                     .panel-col-3 {
                         display: flex;
                         flex-direction: row;
+                        flex-wrap: wrap;
                     }
+
+                    .input-wrapper {
+                        flex-basis: 180px;
+                    }
+
                 `}</style>
             </div>
         )
