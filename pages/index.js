@@ -125,13 +125,32 @@ class Index extends React.Component {
             }
         });
 
-        if (profiles.length === 0) {
+        // Filter by cities
+        let cities = [...this.state.filters.cities];
+
+        let filteredProfiles = profiles.filter(profile => {
+            let match = [];
+            cities.forEach(city => {
+                if(city.name === profile.location.city && city.active) {
+                    match.push(profile);
+                }
+            });
+            if(match.length > 0) {
+                return profile;
+            }
+        });
+
+        if(profiles.length === 0) {
             profiles = this.props.profiles.results;
+        }
+
+        if (filteredProfiles.length === 0) {
+            filteredProfiles = profiles;
         }
 
         this.setState({
             profiles: {
-                results: profiles
+                results: filteredProfiles
             },
         });
 
