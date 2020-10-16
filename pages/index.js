@@ -27,6 +27,7 @@ class Index extends React.Component {
             filters.cities = await profiles.results.map(item => {
                return {
                     name: item.location.city,
+                    country: item.location.country,
                     active: false
                };
             });
@@ -60,39 +61,77 @@ class Index extends React.Component {
         };
     }
 
+    setInitialFilter(propsName) {
+        return [...new Map(propsName.map(item => [item.name, item])).values()];
+    }
+
     applyProfileFilter(index, value, type) {
         
         if(index && type === 'countries') {
+            let cities = this.setInitialFilter(this.props.filters.cities);
+            let countries = [...this.state.filters.countries];
+            let filteredCities = [];
+            let filteredCountries = []
 
-            this.setState(prevState => {
-                let filters = {};
-                    filters = { ...prevState.filters };
-                    filters.countries[index].active = !filters.countries[index].active;
-                    return { filters }
-                });
+            countries[index].active = !countries[index].active;
 
-            };
-
-            let cities = []
-
-            this.state.profiles.results.map(profile => {
-                    
-                if(profile.location.country === value) {
-                    cities.push({
-                        name: profile.location.city,
-                        active: false
+            countries.forEach(country => {
+                if(country.active) {
+                    cities.forEach(city => {
+                        if(city.country === country.name) {
+                            filteredCities.push(city);
+                        }
                     });
                 }
             });
 
+            let updatedCities;
+            filteredCities.length > 0 ? updatedCities = filteredCities : updatedCities = cities;
+            let updatedCountries;
+            filteredCountries.length > 0 ? updatedCountries = filteredCountries : updatedCountries = this.state.filters.countries;
+    
             this.setState(prevState => {
                 let filters = {};
                 filters = { ...prevState.filters };
+                filters.countries = updatedCountries;
+                filters.cities = updatedCities;
+                return { filters };
+            });
+        };
+
+        if(index && type === 'cities') {
+            let cities = [...this.state.filters.cities];
+            cities[index].active = !cities[index].active;
+            this.setState(prevState => {
+                let filters = {...prevState.filters};
                 filters.cities = cities;
-                return { filters }
+                return { filters };
+            });
+        }
+
+        // Update profiles against filters
+        // Filter by countries
+        let countries = [...this.state.filters.countries];
+        let profiles = this.props.profiles.results.filter(item => {
+            let matches = [];
+            countries.forEach(country => {
+                if(item.location.country === country.name && country.active) {
+                    matches.push(item);
+                }
             });
 
-            console.log(cities);
+            if(matches.length > 0) {
+                return item;
+            }
+        });
+        
+
+        this.setState({
+            profiles: {
+                results: profiles
+            },
+        });
+
     }
 
 
@@ -228,14 +267,14 @@ class Index extends React.Component {
                                         <strong>Sort by:</strong>
                                     </div>
 
-                                    <div className="panel-col-2 flex-spacer">
+                                    <div className="panel-col flex-spacer">
                                         <RadioButton label="First Name" />
                                         <RadioButton label="Last Name" />
                                         <RadioButton label="Country" />
                                         <RadioButton label="City" />
                                     </div>
 
-                                    <div className="panel-col-2">
+                                    <div className="panel-col">
                                         <RadioButton label="Asc" />
                                         <RadioButton label="Desc" />
                                     </div>
@@ -327,6 +366,12 @@ class Index extends React.Component {
                         display: flex;
                         flex-direction: row;
                         flex-wrap: wrap;
+                    }
+
+                    .panel-col {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: left;
                     }
 
                     .input-wrapper {
