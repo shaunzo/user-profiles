@@ -131,7 +131,8 @@ class Index extends React.Component {
         if(profiles.length === 0) {
             profiles = this.props.profiles.results;
         }
-        
+
+
         let filteredProfiles = profiles.filter(profile => {
             let match = [];
             cities.forEach(city => {
@@ -192,9 +193,24 @@ class Index extends React.Component {
 
     resetProfiles() {
         const initialState = this.props.profiles;
+        const cities = this.setInitialFilter(this.props.filters.cities);
+        const countries = this.setInitialFilter(this.props.filters.countries);
+
+        countries.forEach(country => {
+            country.active = false;
+        });
+
+        cities.forEach(city => {
+            city.active = false;
+        });
+
         this.setState({
             profiles: {
                 results: initialState.results
+            },
+            filters: {
+                cities,
+                countries
             },
             expandFilter: false,
             expandSortPanel: false,
