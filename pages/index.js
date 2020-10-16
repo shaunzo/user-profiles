@@ -128,6 +128,10 @@ class Index extends React.Component {
         // Filter by cities
         let cities = [...this.state.filters.cities];
 
+        if(profiles.length === 0) {
+            profiles = this.props.profiles.results;
+        }
+        
         let filteredProfiles = profiles.filter(profile => {
             let match = [];
             cities.forEach(city => {
@@ -140,9 +144,6 @@ class Index extends React.Component {
             }
         });
 
-        if(profiles.length === 0) {
-            profiles = this.props.profiles.results;
-        }
 
         if (filteredProfiles.length === 0) {
             filteredProfiles = profiles;
