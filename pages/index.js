@@ -124,7 +124,10 @@ class Index extends React.Component {
                 return item;
             }
         });
-        
+
+        if (profiles.length === 0) {
+            profiles = this.props.profiles.results;
+        }
 
         this.setState({
             profiles: {
