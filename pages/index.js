@@ -68,12 +68,27 @@ class Index extends React.Component {
     applyProfileFilter(index, value, type) {
         
         if(index && type === 'countries') {
-            let cities = this.setInitialFilter(this.props.filters.cities);
+            //let cities = this.setInitialFilter(this.props.filters.cities);
+            let cities = [...this.state.filters.cities];
             let countries = [...this.state.filters.countries];
             let filteredCities = [];
             let filteredCountries = []
 
             countries[index].active = !countries[index].active;
+
+            if(!countries[index].active) {
+                cities = this.setInitialFilter(this.props.filters.cities);
+            }
+
+            // Here check cities if one is active only return that else return all
+
+            let selectedCities = cities.filter(city => {
+                return city.active === true;
+            })
+
+            if(selectedCities.length > 0) {
+                cities = selectedCities;
+            }
 
             countries.forEach(country => {
                 if(country.active) {
