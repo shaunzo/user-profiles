@@ -66,151 +66,169 @@ class Index extends React.Component {
     }
 
     applyProfileFilter(index, value, type) {
-        
-        if(index && type === 'countries') {
-            let countries = [...this.state.filters.countries];
-            let countriesObj = {};
+        if(type === 'countries') {
+            this._setCountriesFilters(index);
+        };
 
-            countries.forEach(country => {
-                countriesObj[country.name] = true;
-            });
+        if(type === 'cities') {
+            this._setCitiesfilters(index);
+        }
 
-            let selectedCountries = countries.filter(country => {
-                if(country.active) {
-                    return country;
+        this._displayFilteredProfiles();
+    }
+
+    _setCitiesfilters(index) {
+        let cities = [...this.state.filters.cities];
+        cities[index].active = !cities[index].active;
+
+        let selectedCountries = [this.state.filters.countries].filter(country => {
+            if(country.active) {
+                return country;
+            }
+        });
+
+        if(selectedCountries.length === 0) {
+            cities = this.setInitialFilter(this.props.filters.cities);
+        }
+
+        this.setState(prevState => {
+            let filters = {...prevState.filters};
+            filters.cities = cities;
+            return { filters };
+        });
+    }
+
+    _setCountriesFilters(index) {
+        let countries = [...this.state.filters.countries];
+        let countriesObj = {};
+
+        countries.forEach(country => {
+            countriesObj[country.name] = true;
+        });
+
+        let selectedCountries = countries.filter(country => {
+            if(country.active) {
+                return country;
+            }
+        })
+
+        let cities = this.setInitialFilter(this.props.filters.cities);
+
+        if(selectedCountries.length > 0) {
+            cities = cities.filter(city => {
+                if(countriesObj[city.country]) {
+                    return city;
                 }
-            })
+            });
+        }
 
-            let cities = this.setInitialFilter(this.props.filters.cities);
+        let filteredCities = [];
+        let filteredCountries = []
 
-            if(selectedCountries.length > 0) {
-                cities = cities.filter(city => {
-                    if(countriesObj[city.country]) {
-                        return city;
+        countries[index].active = !countries[index].active;
+
+        let selectedCities = cities.filter(city => {
+            return city.active === true;
+        })
+
+        if(selectedCities.length > 0) {
+            cities = selectedCities;
+        }
+
+        countries.forEach(country => {
+            if(country.active) {
+                cities.forEach(city => {
+                    if(city.country === country.name) {
+                        filteredCities.push(city);
                     }
                 });
             }
+        });
 
-            let filteredCities = [];
-            let filteredCountries = []
+        let updatedCities;
+        filteredCities.length > 0 ? updatedCities = filteredCities : updatedCities = cities;
+        let updatedCountries;
+        filteredCountries.length > 0 ? updatedCountries = filteredCountries : updatedCountries = this.state.filters.countries;
 
-            countries[index].active = !countries[index].active;
+        this.setState(prevState => {
+            let filters = {};
+            filters = { ...prevState.filters };
+            filters.countries = updatedCountries;
+            filters.cities = updatedCities;
+            return { filters };
+        });
+    }
 
-            let selectedCities = cities.filter(city => {
-                return city.active === true;
-            })
+    _displayFilteredProfiles() {
+        let filteredProfiles = [];
+        let selectedCountries = [...this.state.filters.countries].filter(country => country.active);
+        let selectedCities = [...this.state.filters.cities].filter(city => city.active);
 
-            if(selectedCities.length > 0) {
-                cities = selectedCities;
-            }
+        if(selectedCities.length > 0 && selectedCountries.length > 0) {
+            let countriesObj = {};
+            let citiesObj = {};
 
-            countries.forEach(country => {
-                if(country.active) {
-                    cities.forEach(city => {
-                        if(city.country === country.name) {
-                            filteredCities.push(city);
-                        }
-                    });
-                }
+            selectedCountries.forEach(country => {
+               countriesObj[country.name] = true;
             });
 
-            let updatedCities;
-            filteredCities.length > 0 ? updatedCities = filteredCities : updatedCities = cities;
-            let updatedCountries;
-            filteredCountries.length > 0 ? updatedCountries = filteredCountries : updatedCountries = this.state.filters.countries;
-    
-            this.setState(prevState => {
-                let filters = {};
-                filters = { ...prevState.filters };
-                filters.countries = updatedCountries;
-                filters.cities = updatedCities;
-                return { filters };
-            });
-        };
+            selectedCities.forEach(city => {
+               citiesObj[city.name] = true;
+           });
 
-        if(index && type === 'cities') {
-            let cities = [...this.state.filters.cities];
-            cities[index].active = !cities[index].active;
-            this.setState(prevState => {
-                let filters = {...prevState.filters};
-                filters.cities = cities;
-                return { filters };
-            });
+            filteredProfiles = [...this.props.profiles.results].filter(profile => {
+                let cityInCountry = false;
+                
+                selectedCities.forEach(city => {
+                    if(countriesObj[city.country]) {
+                        cityInCountry = true;
+                    }
+                });
+
+               if( countriesObj[profile.location.country] &&
+                   citiesObj[profile.location.city] &&
+                   cityInCountry
+               ) {
+                   return profile;
+               }
+           }); 
         }
 
-        /**
-         * Update displayed profiles against filters
-         */
-
-         let filteredProfiles = [];
-         selectedCountries = [...this.state.filters.countries].filter(country => country.active);
-         let selectedCities = [...this.state.filters.cities].filter(city => city.active);
-
-         if(selectedCities.length > 0 && selectedCountries.length > 0) {
-             let countriesObj = {};
-             let citiesObj = {};
-
-             selectedCountries.forEach(country => {
+        if(selectedCountries.length > 0 && selectedCities.length === 0) {
+            let countriesObj = {};
+            selectedCountries.forEach(country => {
                 countriesObj[country.name] = true;
-             });
-
-             selectedCities.forEach(city => {
-                citiesObj[city.name] = true;
-            });
-
-             filteredProfiles = [...this.props.profiles.results].filter(profile => {
-                 let cityInCountry = false;
-                 
-                 selectedCities.forEach(city => {
-                     if(countriesObj[city.country]) {
-                         cityInCountry = true;
-                     }
-                 });
-
-                if( countriesObj[profile.location.country] &&
-                    citiesObj[profile.location.city] &&
-                    cityInCountry
-                ) {
-                    return profile;
-                }
-            }); 
-         }
-
-         if(selectedCountries.length > 0 && selectedCities.length === 0) {
-             let countriesObj = {};
-             selectedCountries.forEach(country => {
-                 countriesObj[country.name] = true;
-             });
- 
-             filteredProfiles = [...this.props.profiles.results].filter(profile => {
-                 if(countriesObj[profile.location.country]) {
-                     return profile;
-                 }
-             });
-         }
-         
-         if(selectedCountries.length === 0 && selectedCities.length > 0) {
-            let citiesObj = {};
-            selectedCities.forEach(city => {
-                citiesObj[city.name] = true;
             });
 
             filteredProfiles = [...this.props.profiles.results].filter(profile => {
-                if(citiesObj[profile.location.city]) {
+                if(countriesObj[profile.location.country]) {
                     return profile;
                 }
             });
         }
-         
-         if(selectedCities.length === 0 && selectedCountries.length === 0) {
-             filteredProfiles = this.props.profiles.results;
-         }
+        
+        if(selectedCountries.length === 0 && selectedCities.length > 0) {
+           let citiesObj = {};
+           selectedCities.forEach(city => {
+               citiesObj[city.name] = true;
+           });
 
-        this.setState({
-            profiles: {
-                results: filteredProfiles
-            },
-        });
+           filteredProfiles = [...this.props.profiles.results].filter(profile => {
+               if(citiesObj[profile.location.city]) {
+                   return profile;
+               }
+           });
+       }
+        
+        if(selectedCities.length === 0 && selectedCountries.length === 0) {
+            filteredProfiles = this.props.profiles.results;
+        }
+
+       this.setState({
+           profiles: {
+               results: filteredProfiles
+           },
+       });
     }
 
 
