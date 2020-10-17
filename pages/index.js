@@ -68,19 +68,33 @@ class Index extends React.Component {
     applyProfileFilter(index, value, type) {
         
         if(index && type === 'countries') {
-            //let cities = this.setInitialFilter(this.props.filters.cities);
-            let cities = [...this.state.filters.cities];
             let countries = [...this.state.filters.countries];
+            let countriesObj = {};
+
+            countries.forEach(country => {
+                countriesObj[country.name] = true;
+            });
+
+            let selectedCountries = countries.filter(country => {
+                if(country.active) {
+                    return country;
+                }
+            })
+
+            let cities = this.setInitialFilter(this.props.filters.cities);
+
+            if(selectedCountries.length > 0) {
+                cities = cities.filter(city => {
+                    if(countriesObj[city.country]) {
+                        return city;
+                    }
+                });
+            }
+
             let filteredCities = [];
             let filteredCountries = []
 
             countries[index].active = !countries[index].active;
-
-            if(!countries[index].active) {
-                cities = this.setInitialFilter(this.props.filters.cities);
-            }
-
-            // Here check cities if one is active only return that else return all
 
             let selectedCities = cities.filter(city => {
                 return city.active === true;
@@ -124,53 +138,79 @@ class Index extends React.Component {
             });
         }
 
-        // Update profiles against filters
-        // Filter by countries
-        let countries = [...this.state.filters.countries];
-        let profiles = this.props.profiles.results.filter(item => {
-            let matches = [];
-            countries.forEach(country => {
-                if(item.location.country === country.name && country.active) {
-                    matches.push(item);
-                }
+        /**
+         * Update displayed profiles against filters
+         */
+
+         let filteredProfiles = [];
+         selectedCountries = [...this.state.filters.countries].filter(country => country.active);
+         let selectedCities = [...this.state.filters.cities].filter(city => city.active);
+
+         if(selectedCities.length > 0 && selectedCountries.length > 0) {
+             let countriesObj = {};
+             let citiesObj = {};
+
+             selectedCountries.forEach(country => {
+                countriesObj[country.name] = true;
+             });
+
+             selectedCities.forEach(city => {
+                citiesObj[city.name] = true;
             });
 
-            if(matches.length > 0) {
-                return item;
-            }
-        });
+             filteredProfiles = [...this.props.profiles.results].filter(profile => {
+                 let cityInCountry = false;
+                 
+                 selectedCities.forEach(city => {
+                     if(countriesObj[city.country]) {
+                         cityInCountry = true;
+                     }
+                 });
 
-        // Filter by cities
-        let cities = [...this.state.filters.cities];
+                if( countriesObj[profile.location.country] &&
+                    citiesObj[profile.location.city] &&
+                    cityInCountry
+                ) {
+                    return profile;
+                }
+            }); 
+         }
 
-        if(profiles.length === 0) {
-            profiles = this.props.profiles.results;
-        }
+         if(selectedCountries.length > 0 && selectedCities.length === 0) {
+             let countriesObj = {};
+             selectedCountries.forEach(country => {
+                 countriesObj[country.name] = true;
+             });
+ 
+             filteredProfiles = [...this.props.profiles.results].filter(profile => {
+                 if(countriesObj[profile.location.country]) {
+                     return profile;
+                 }
+             });
+         }
+         
+         if(selectedCountries.length === 0 && selectedCities.length > 0) {
+            let citiesObj = {};
+            selectedCities.forEach(city => {
+                citiesObj[city.name] = true;
+            });
 
-
-        let filteredProfiles = profiles.filter(profile => {
-            let match = [];
-            cities.forEach(city => {
-                if(city.name === profile.location.city && city.active) {
-                    match.push(profile);
+            filteredProfiles = [...this.props.profiles.results].filter(profile => {
+                if(citiesObj[profile.location.city]) {
+                    return profile;
                 }
             });
-            if(match.length > 0) {
-                return profile;
-            }
-        });
-
-
-        if (filteredProfiles.length === 0) {
-            filteredProfiles = profiles;
         }
+         
+         if(selectedCities.length === 0 && selectedCountries.length === 0) {
+             filteredProfiles = this.props.profiles.results;
+         }
 
         this.setState({
             profiles: {
                 results: filteredProfiles
             },
         });
-
     }
 
 
